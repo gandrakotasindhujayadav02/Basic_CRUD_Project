@@ -1,0 +1,18 @@
+﻿body {
+    font-family:Arial;
+}
+h1 {
+    font-weight: bold;
+    font-size: 22px;
+    color: blue;
+    text-decoration: underline;
+}
+.table th {
+    font-weight: bold;
+    padding: 2px;
+    border-bottom: 1px solid #000;
+    /*text-decoration: underline;*/
+}
+.table td{
+    padding:2px;
+}

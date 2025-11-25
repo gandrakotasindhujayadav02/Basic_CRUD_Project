@@ -1,0 +1,113 @@
+﻿@model EmployeeManagement.Models.Employee_Model
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "EmployeeList";
+}
+@{
+    var status = TempData["Status"] as string ?? "";
+}
+<input type="hidden" id="hndStatus" value="@status" />
+
+<h1 class="text-center">Employee List</h1>
+<section>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-end mb-3 ml-5">
+            <a class="btn btn-success ml-5" href="@Url.Action("CreateEmployee", "Employee")">Add Employee</a>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                @if (Model != null)
+                {
+                    if (Model.EmployeeDtls_MdlList != null)
+                    {
+                        <table class="table table-bordered table-striped" id="employeeTable">
+                            <thead>
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee Age</th>
+                                    <th>Total Salary</th>
+                                    <th>Action (Edit / Delete)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.EmployeeDtls_MdlList.Count > 0)
+                                {
+                                    foreach (var emp in Model.EmployeeDtls_MdlList)
+                                    {
+                                        <tr>
+                                            <td>@emp.EmployeeId</td>
+                                            <td>@emp.EmployeeName</td>
+                                            <td>@emp.EmployeeAge</td>
+                                            <td>@emp.TotalSalary</td>
+                                            <td>
+                                                <a class="btn btn-primary" href="@Url.Action("EditEmployee","Employee",new{EmpId=emp.EmployeeId})">Edit</a>
+                                                <a class="btn btn-danger btnDelete" data-employeeid="@emp.EmployeeId">Delete</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if ($("#hndStatus").val() != "") {
+                debugger;
+                let statusMessage = $("#hndStatus").val().toLowerCase();
+                let iconType;
+                alert($("#hndStatus").val());
+                // if (statusMessage.includes("success")) {
+                //     iconType = "success";
+                // } else if (statusMessage.includes("please")) {
+                //     iconType = "info";
+                // } else {
+                //     iconType = "error";
+                // }
+
+                // Swal.fire({
+                //     icon: iconType,
+                //     text: $("#hndStatus").val()
+                // });
+            };
+
+            $(document).on("click", ".btnDelete", function () {
+                debugger;
+                var empId = $(this).data("employeeid");
+
+                if (confirm("Do you want to delete this employee details?")) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteEmpDetails", "Employee")',
+                        type: 'POST',
+                        data: { empId: empId },
+                        success: function (response) {
+                            if (response === 'S') {
+                                alert("Employee Details Deleted successfully.");
+                                var url = '@Url.Action("EmployeeList", "Employee")';
+                                location.href = url;
+                            } else {
+                                alert("Failed to delete.");
+                            }
+                        },
+                        error: function () {
+                            alert("Error while deleting employee.");
+                        }
+                    });
+                }
+            });
+            $('#employeeTable').DataTable({
+                pageLength: 10,
+                lengthChange: true,
+                searching: true,
+                ordering: true
+            });
+        });
+    </script>
+}
+

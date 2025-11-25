@@ -1,0 +1,116 @@
+﻿@model EmployeeManagement.Models.EmployeeDtls_Mdl
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "EditEmployee";
+}
+
+<h1 class="text-center">EditEmployee</h1>
+<form asp-action="EditEmployee" asp-controller="Employee" method="post" id="EmpDtlsUpdForm">
+    <div class="container mt-4 p-4 shadow-sm rounded bg-light">
+
+        <!-- Header -->
+        <div class="row mb-3">
+            <div class="col text-center">
+                <h5 class="text-primary fw-semibold">Employee Information</h5>
+            </div>
+        </div>
+
+        <!-- Employee Info -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label class="form-label">Employee Name <span class="text-danger fw-bold">*</span></label>
+                <input type="text" id="txtEmpName" asp-for="EmployeeName" class="form-control" maxlength="50" />
+                <input type="hidden" asp-for="EmployeeId" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Employee Age <span class="text-danger fw-bold">*</span></label>
+                <input type="text" id="txtEmpAge" asp-for="EmployeeAge" class="form-control" maxlength="3" oninput="validateAgeInput(this)" />
+            </div>
+        </div>
+
+        <!-- Salary Header -->
+        <div class="row mb-3">
+            <div class="col text-center">
+                <h5 class="text-success fw-semibold">Salary Details</h5>
+            </div>
+        </div>
+
+        <!-- Salary Inputs -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label class="form-label">Basic Salary <span class="text-danger fw-bold">*</span></label>
+                <input type="text" id="basicsalary" asp-for="BasicSalary" class="form-control" oninput="validateSalaryInput(this)" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">HRA <span class="text-danger fw-bold">*</span></label>
+                <input type="text" id="inpHRA" asp-for="HRA" class="form-control" oninput="validateSalaryInput(this)" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">TA <span class="text-danger fw-bold">*</span></label>
+                <input type="text" id="inpTA" asp-for="TA" class="form-control" oninput="validateSalaryInput(this)" />
+            </div>
+        </div>
+
+        <!-- Total Salary -->
+        <div class="row mb-4">
+            <div class="col-md-4 offset-md-4 text-center">
+                <label class="form-label">Total Salary</label>
+                <input type="text" readonly="readonly" id="txtTotalSalary" asp-for="TotalSalary" class="form-control" />
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row text-center">
+            <div class="col">
+                <button type="button" class="btn btn-primary px-4" id="btnUpdate">Update</button>
+                <a class="btn btn-secondary px-4 ms-2" href="@Url.Action("EmployeeList", "Employee")">Back</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnUpdate").on("click", function () {
+                if ($("#txtEmpName").val() == "") {
+                    alert("Please enter Employee Name");
+                    $("#txtEmpName").focus();
+                    //event.preventDefault();
+                    return false;
+                }
+                if ($("#txtEmpAge").val() == "") {
+                    alert("Please enter Employee Age");
+                    //event.preventDefault();
+                    return false;
+                }
+                if ($("#basicsalary").val() == "") {
+                    alert("Please enter Basic Salary");
+                    //event.preventDefault();
+                    return false;
+                }
+                else if ($("#inpHRA").val() == "") {
+                    alert("Please enter HRA");
+                    return false;
+                }
+                else if ($("#inpTA").val() == "") {
+                    alert("Please enter TA");
+                    return false;
+                }
+                else {
+                    $("#EmpDtlsUpdForm").submit();
+                }
+            })
+
+            $("#basicsalary, #inpHRA, #inpTA").on("input", function () {
+                debugger;
+                var basicsalary = parseFloat($("#basicsalary").val()) || 0;
+                var HRA = parseFloat($("#inpHRA").val()) || 0;
+                var TA = parseFloat($("#inpTA").val()) || 0;
+                var totalSalary = basicsalary + HRA + TA;
+                $("#txtTotalSalary").val(totalSalary > 0 ? totalSalary.toFixed(2) : 0);
+            })
+        })
+    </script>
+}
+
